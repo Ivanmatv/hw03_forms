@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %} 
+  {{ post.text[0:30] }}
+{%endblock%}
+
+{% block content %}
+    <h1>{{ group.title }}</h1>
+    <p>
+      {{ group.description }}
+    </p>
+      {% for post in posts %}  
+      <div class="row">
+        <aside class="col-12 col-md-3">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Дата публикации: {{ post.pub_date|date:"d E Y" }} 
+            </li>
+              {% if post.group.slug %}
+            <li class="list-group-item">
+              Группа: {{ post.group.slug }}
+              <a href="{% url post:group_posts %}">
+                все записи группы
+              </a>
+            </li>
+            <li class="list-group-item">
+              Автор: {{ posts.author.get_full_name }}
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Всего постов автора:  <span >{{ posts.author }}</span>
+            </li>
+            <li class="list-group-item">
+              <a href="{% url posts:post_detail %}">
+                все посты пользователя
+              </a>
+            </li>
+          </ul>
+        </aside>
+        <p>{{ posts.text|linebreaksbr }}</p> 
+        <article class="col-12 col-md-9">
+        {% if not forloop.last %}<hr>{% endif %}
+      {% endfor %} 
+{% endblock %}
