@@ -47,6 +47,7 @@ def profile(request, username):
         'post_count': post_count,
         'author': author,
         'page_obj': page_obj,
+        'username': username,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -81,7 +82,7 @@ def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = PostForm(request.Post or None, inastance=post)
     if request.user != post.author:
-        return redirect(f'/post/{post_id}/')
+        return redirect(f'/post/{post_id}/', post)
     if request.method == "Post":
         if form.is_valid():
             form.save()

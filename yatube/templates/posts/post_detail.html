@@ -1,43 +1,41 @@
 {% extends 'base.html' %}
 
 {% block title %} 
-  {{ title }}
+{{ title }}
 {%endblock%}
 
 {% block content %}
-    <h1>{{ group.title }}</h1>
-    <p>
-      {{ group.description }}
-    </p>
-      {% for post in posts %}  
       <div class="row">
         <aside class="col-12 col-md-3">
           <ul class="list-group list-group-flush">
             <li class="list-group-item">
               Дата публикации: {{ post.pub_date|date:"d E Y" }} 
             </li>
-              {% if post.group.slug %}
+              {% if post.group %}
             <li class="list-group-item">
-              Группа: {{ post.group.slug }}
-              <a href="{% url post:group_posts %}">
+              Группа: {{ post.group }}
+              <a href="{% url 'posts:group_list' post.group %}">
                 все записи группы
               </a>
+              {% endif %}
             </li>
             <li class="list-group-item">
-              Автор: {{ posts.author.get_full_name }}
+              Автор: {{author_post }}
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              Всего постов автора:  <span >{{ posts.author }}</span>
+              Всего постов автора:<span>{{ post_count }}</span>
             </li>
             <li class="list-group-item">
-              <a href="{% url posts:post_detail %}">
+              <a href="{% url 'posts:profile' post.author %}">
                 все посты пользователя
               </a>
             </li>
           </ul>
         </aside>
-        <p>{{ posts.text|linebreaksbr }}</p> 
         <article class="col-12 col-md-9">
-        {% if not forloop.last %}<hr>{% endif %}
-      {% endfor %} 
+        <p>
+          {{ post.text|linebreaksbr }}
+        </p> 
+      </article>
+    </div>        
 {% endblock %}

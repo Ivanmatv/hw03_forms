@@ -24,10 +24,10 @@
         {% if request.user.is_authenticated %}
         <li class="nav-item"> 
           <a class="nav-link {% if view_name  == '' %}active{% endif %}"
-           href="<!--  -->">Новая запись</a>
+           href="{% url 'posts:create_post' %}">Новая запись</a>
         </li>
         <li class="nav-item"> 
-          <a class="nav-link link-light" href="<!--  -->">Изменить пароль</a>
+          <a class="nav-link link-light" href="#">Изменить пароль</a>
         </li>
         <li class="nav-item"> 
           <a class="nav-link link-light" href="{% url 'users:logout' %}">Выйти</a>
@@ -37,14 +37,13 @@
         </li>
         {% else %}
         <li class="nav-item"> 
-          <a class="nav-link link-light" href="{% url 'users:signup' %}">Войти</a>
+          <a class="nav-link link-light" href="{% url 'users:login' %}">Войти</a>
         </li>
         <li class="nav-item"> 
-          <a class="nav-link link-light" href="<!--  -->">Регистрация</a>
+          <a class="nav-link link-light" href="{% url 'users:signup' %}">Регистрация</a>
         </li>
         {% endif %}
       </ul>
       {% endwith %}
-      {# Конец добавленого в спринте #}
     </div>
   </nav>      
