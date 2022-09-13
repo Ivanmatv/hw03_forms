@@ -9,7 +9,7 @@ class PostForm(forms.ModelForm):
         fields = ('group', 'text')
         help_texts = {
             'group': 'Выберите группу',
-            'text': 'Введите сообщение'
+            'text': 'Введите сообщение',
         }
 
     def clean_text(self):
