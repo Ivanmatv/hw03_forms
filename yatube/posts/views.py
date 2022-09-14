@@ -1,14 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 
 from .forms import PostForm
 from .models import Post, Group, User
 
+NUM_PUB: int = 10
 
 def index(request):
-    post_list = Post.objects.all().order_by('-pub_date')
-    paginator = Paginator(post_list, 10)
+    post_list = Post.objects.all()
+    paginator = Paginator(post_list, NUM_PUB)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -18,11 +20,10 @@ def index(request):
 
 
 def group_posts(request, slug):
-    NUM_PUB: int = 10
     template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
-    posts = Post.objects.filter(group=group).order_by('-pub_date')[:NUM_PUB]
-    paginator = Paginator(posts, 10)
+    posts = group.posts.all()
+    paginator = Paginator(posts, NUM_PUB)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -35,9 +36,9 @@ def group_posts(request, slug):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    user_posts = Post.objects.filter(author=author).order_by('-pub_date')
+    user_posts = Post.objects.filter(author=author)
     post_count = user_posts.count()
-    paginator = Paginator(user_posts, 10)
+    paginator = Paginator(user_posts, NUM_PUB)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     title = f'Профаил пользователя {username}'
@@ -65,6 +66,7 @@ def post_detail(request, post_id):
     return render(request, 'posts/post_detail.html', context)
 
 
+@login_required
 def post_create(request):
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -75,6 +77,7 @@ def post_create(request):
     return render(request, 'posts/create_post.html', {'form': form})
 
 
+@login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = PostForm(request.POST or None, instance=post)
