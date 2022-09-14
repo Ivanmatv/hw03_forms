@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+
 {% block title %}
 Профайл пользователя {{ username }}
 {% endblock %}
+
 {% block content %}    
   <h1>Все посты пользователя {{ author.get_full_name }}</h1>
   <h3>Всего постов: {{ post_count }} </h3>

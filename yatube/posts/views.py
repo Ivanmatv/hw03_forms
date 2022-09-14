@@ -1,8 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 
-'#from django.contrib.auth.decorators import login_required'
-
 
 from .forms import PostForm
 from .models import Post, Group, User
@@ -68,34 +66,21 @@ def post_detail(request, post_id):
 
 
 def post_create(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        post = form.save(commit=False)
-        post.author = request.user
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        form = form.save(commit=False)
+        form.author = request.user
         form.save()
-        return redirect(f'/profile/{request.user.username}')
-    form = PostForm()
-    groups = Group.objects.all()
-    context = {
-        'form': form,
-        'groups': groups
-    }
-    return render(request, 'posts/create_post.html', context)
+        return redirect(f'/profile/{form.author.username}/')
+    return render(request, 'posts/create_post.html', {'form': form})
 
 
 def post_edit(request, post_id):
-    is_edit = True
     post = get_object_or_404(Post, pk=post_id)
-    form = PostForm(request.Post or None, inastance=post)
+    form = PostForm(request.POST or None, instance=post)
     if request.user != post.author:
-        return redirect(f'/post/{post_id}/', post)
-    if request.method == "Post":
-        if form.is_valid():
-            form.save()
-            return redirect('posts:post_detail', post_id=post.pk)
-        context = {
-            'form': form,
-            'is_edit': is_edit,
-            'post_id': post.pk,
-        }
-        return render(request, 'posts/create_post.html', context)
+        return redirect('posts:post_detail', post_id=post.pk)
+    if form.is_valid():
+        form.save()
+        return redirect('posts:post_detail', post_id=post.pk)
+    return render(request, 'posts/create_post.html', {'form': form})
