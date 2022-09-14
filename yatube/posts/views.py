@@ -8,6 +8,7 @@ from .models import Post, Group, User
 
 NUM_PUB: int = 10
 
+
 def index(request):
     post_list = Post.objects.all()
     paginator = Paginator(post_list, NUM_PUB)
